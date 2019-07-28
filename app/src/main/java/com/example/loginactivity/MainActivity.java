@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void loginSuccess(JSONObject data){
         try{
-
+            SharedPreferences sharedPreferences = getSharedPreferences("shared",MODE_MULTI_PROCESS);
+            sharedPreferences.edit().putString("shared","deviceId").apply();
         }catch (Exception e){
             Log.d(TAG,e.getMessage());
         }
