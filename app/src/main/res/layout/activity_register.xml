@@ -7,75 +7,105 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Buddy Bot "
+            android:text="Buddy Bot"
+            android:layout_gravity="center"
             android:textSize="70sp"
             android:id="@+id/textView"
             android:textColor="#000000"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="50dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutId"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            android:layout_marginBottom="1dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:drawableLeft="@drawable/loginid"
-            android:inputType="text"
-            android:id="@+id/editText"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:hint="아이디 입력"
-            android:maxLines="1"
-            android:textColorHint="#999999"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:layout_below="@id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="47dp" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:hint="비밀번호 입력"
-            android:textSize="20sp"
-            android:textColorHint="#999999"
-            android:textColor="#000000"
-            android:id="@+id/editText2"
-            android:drawableLeft="@drawable/paddlelock"
-            android:layout_below="@id/editText"
-            android:layout_alignLeft="@id/editText"
-            android:layout_alignStart="@id/editText"
-            android:layout_alignEnd="@id/editText" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="1dp"
+                android:gravity="center_vertical"
+                android:hint="Input Id"
+                android:maxLength="20"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:textSize="16sp" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:hint="비밀번호 확인"
-            android:textSize="20sp"
-            android:textColorHint="#999999"
-            android:textColor="#000000"
-            android:imeOptions="actionDone"
-            android:id="@+id/editText3"
-            android:drawableLeft="@drawable/paddlelock"
-            android:layout_below="@id/editText2"
-            android:layout_alignLeft="@id/editText"
-            android:layout_alignStart="@id/editText"
-            android:layout_alignEnd="@id/editText" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutId1"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            android:layout_marginBottom="1dp"
+            app:passwordToggleEnabled="true"
+            android:layout_below="@id/layoutId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="Enter User Passwrod"
+                android:maxLength="20"
+                android:textSize="20sp"
+                android:textColorHint="#999999"
+                android:textColor="#000000"
+                android:drawableLeft="@drawable/paddlelock"
+                android:layout_below="@id/layoutId"
+                android:layout_alignLeft="@id/layoutId1"
+                android:layout_alignStart="@id/layoutId1"
+                android:layout_alignEnd="@id/layoutId1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutId2"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            android:layout_marginBottom="1dp"
+            app:passwordToggleEnabled="true"
+            android:layout_below="@id/layoutId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="Confirm User Passwrod"
+                android:maxLength="20"
+                android:textSize="20sp"
+                android:textColorHint="#999999"
+                android:textColor="#000000"
+                android:imeOptions="actionDone"
+                android:drawableLeft="@drawable/paddlelock"
+                android:layout_below="@id/layoutId"
+                android:layout_alignLeft="@id/layoutId1"
+                android:layout_alignStart="@id/layoutId1"
+                android:layout_alignEnd="@id/layoutId1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/email_sign_in_button"
@@ -83,8 +113,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_alignEnd="@id/editText2"
-            android:layout_alignStart="@id/editText2"
+            android:layout_marginHorizontal="20dp"
+            android:layout_alignEnd="@id/layoutId2"
+            android:layout_alignStart="@id/layoutId2"
             android:text="회원가입"
             android:textStyle="bold"
             android:layout_below="@id/editText3"
@@ -96,6 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_alignEnd="@id/editText2"
             android:layout_alignStart="@id/editText2"
             android:text="그만두기"
@@ -111,5 +143,5 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="200dp"
             android:visibility="invisible"/>
-    </RelativeLayout>
+    </LinearLayout>
 </ScrollView>

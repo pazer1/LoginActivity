@@ -2,8 +2,11 @@ package com.example.loginactivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -64,19 +67,25 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("MissingPermission")
     private void sendRegisterInfo(){
         try{
             String path ="";
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+            final String deviceId = telephonyManager.getDeviceId();
             RestfulCmd cmd = new RestfulCmd(path, RestfulCmd.RequestMethod.POST);
             cmd.addParam("userId", mUsernameText.getText().toString());
             cmd.addParam("userPw", mPasswordText.getText().toString());
+            cmd.addParam("deviceId",deviceId);
             cmd.execute();
             cmd.setCallbacksFunc(new RestfulCmd.RestfulCmdResultCb() {
                 @Override
                 public void onPostExcuted(String result) throws JSONException, NullPointerException {
                     JSONObject jObject = new JSONObject(result);
                     if(jObject.optString(RestfulCmd.JSON_RESULT_OK).equals("Y")){
-                        registerSuccess(jObject);
+                        SharedPreferences sharedPreferences = getSharedPreferences("deviceShared",MODE_MULTI_PROCESS);
+                        sharedPreferences.edit().putString("deviceId",deviceId).apply();
+                        finish();
                     }else{
                         registerFailed(jObject);
                     }
@@ -87,12 +96,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void registerSuccess(JSONObject jObject){
-        //자동 로그인?
-    }
-
     private void registerFailed(JSONObject jObject){
-
+        Toast.makeText(this, "회원등록 실패했습니다.", Toast.LENGTH_SHORT).show();
     }
 
 }

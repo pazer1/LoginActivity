@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginactivity.async.RestfulCmd;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mUsernameText;
     private EditText mPasswordText;
     private Button mLoginButton,mRegisterButton;
+    TextInputLayout layoutId,layoutId1;
 
     private static final int REQUEST_CODE_PERMISSIONS = 101;
     private final String TAG = "LOGINACTIVITY";
@@ -86,14 +89,22 @@ public class MainActivity extends AppCompatActivity {
         mPasswordText = findViewById(R.id.editText2);
         mLoginButton = findViewById(R.id.email_sign_in_button);
         mRegisterButton = findViewById(R.id.register_btn);
+        layoutId = findViewById(R.id.layoutId);
+        layoutId1 = findViewById(R.id.layoutId1);
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(mUsernameText.getText().toString()) || TextUtils.isEmpty(mPasswordText.getText().toString())){
-                    Toast.makeText(MainActivity.this, "빈 칸을 채워주세요", Toast.LENGTH_SHORT).show();
+                if(TextUtils.isEmpty(mUsernameText.getText().toString()))
+                    layoutId.setError("빈 칸을 채워주세요");
+                else layoutId.setError(null);
+                if(TextUtils.isEmpty(mPasswordText.getText().toString()))
+                    layoutId1.setError("빈 칸을 채워주세요");
+                else layoutId1.setError(null);
+
+                if(TextUtils.isEmpty(mUsernameText.getText().toString()) ||TextUtils.isEmpty(mPasswordText.getText().toString()))
                     return;
-                }
+
                 sendLoginInfo();
             }
         });
@@ -113,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             RestfulCmd cmd = new RestfulCmd("/rest/v1/auth/loginPs", RestfulCmd.RequestMethod.POST); // 정보를 보낼 API URL, 메스드 타입(post) 설정
             cmd.addParam("userId", mUsernameText.getText().toString()); // 아이디 속성 추가
             cmd.addParam("userPw", mPasswordText.getText().toString()); // 비번 속성 추가
+            Log.d("deviceId",telephonyManager.getDeviceId()+"");
             cmd.execute();
             cmd.setCallbacksFunc(new RestfulCmd.RestfulCmdResultCb() {
                 @Override
@@ -130,11 +142,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void loginSuccess(JSONObject data){
-        try{
-            SharedPreferences sharedPreferences = getSharedPreferences("shared",MODE_MULTI_PROCESS);
-            sharedPreferences.edit().putString("shared","deviceId").apply();
-        }catch (Exception e){
-            Log.d(TAG,e.getMessage());
+        SharedPreferences sharedPreferences =getSharedPreferences("deviceShared",MODE_MULTI_PROCESS);
+        if(sharedPreferences.contains("deviceId")){
+
+        }else{
+            sharedPreferences.edit().putString("deviceId",data.optString("deviceId")).apply();
         }
     }
     public void loginFail(JSONObject result){
