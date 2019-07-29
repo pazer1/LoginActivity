@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -43,6 +44,7 @@ public class RestfulCmd extends AsyncTask<String, Integer, String> {
     public static final String JSON_ERROR_CODE = "errCode";
     public static final String JSON_ERROR_MSG = "errMsg";
     public static final String JSON_RESULT_CASH = "cash";
+    //서버의 first separator 를 바꾸어 주어야 한다.
     public static final String SERVER_URL = "http://117.4.237.188"; //http://192.168.0.67:8080/api/v1.0/contents
     //    public static final String SERVER_URL = "http://192.168.0.67:8080"; //http://192.168.0.67:8080/api/v1.0/contents
     public static final String ERROR_CODE_NO_EMAIL = "ERR01"; // 등록되지 않은 이메일

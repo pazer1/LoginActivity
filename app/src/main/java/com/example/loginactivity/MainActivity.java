@@ -7,11 +7,13 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText mUsernameText;
     private EditText mPasswordText;
-    private Button mLoginButton;
+    private Button mLoginButton,mRegisterButton;
 
     private static final int REQUEST_CODE_PERMISSIONS = 101;
     private final String TAG = "LOGINACTIVITY";
@@ -83,11 +85,22 @@ public class MainActivity extends AppCompatActivity {
         mUsernameText = findViewById(R.id.editText);
         mPasswordText = findViewById(R.id.editText2);
         mLoginButton = findViewById(R.id.email_sign_in_button);
+        mRegisterButton = findViewById(R.id.register_btn);
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(TextUtils.isEmpty(mUsernameText.getText().toString()) || TextUtils.isEmpty(mPasswordText.getText().toString())){
+                    Toast.makeText(MainActivity.this, "빈 칸을 채워주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 sendLoginInfo();
+            }
+        });
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,RegisterActivity.class));
             }
         });
     }
@@ -100,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
             RestfulCmd cmd = new RestfulCmd("/rest/v1/auth/loginPs", RestfulCmd.RequestMethod.POST); // 정보를 보낼 API URL, 메스드 타입(post) 설정
             cmd.addParam("userId", mUsernameText.getText().toString()); // 아이디 속성 추가
             cmd.addParam("userPw", mPasswordText.getText().toString()); // 비번 속성 추가
-            Toast.makeText(this,telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
             cmd.execute();
             cmd.setCallbacksFunc(new RestfulCmd.RestfulCmdResultCb() {
                 @Override
@@ -126,10 +138,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void loginFail(JSONObject result){
-        try{
-
-        }catch (Exception e){
-            Log.d(TAG,e.getMessage());
-        }
+        Toast.makeText(this, "로그인 할 수 없습니다.", Toast.LENGTH_SHORT).show();
     }
 }
