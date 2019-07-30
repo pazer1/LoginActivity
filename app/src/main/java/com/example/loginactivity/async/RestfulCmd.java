@@ -297,10 +297,10 @@ public class RestfulCmd extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        String url = SERVER_URL;
-        if (!mPathSeperator.isEmpty()) {
-            url += mPathSeperator;
-        }
+        String url = mPathSeperator;
+//        if (!mPathSeperator.isEmpty()) {
+//            url += mPathSeperator;
+//        }
 
         try {
             switch (mReqMethod) {

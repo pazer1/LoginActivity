@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 
         initComponenet();
     }
@@ -54,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
                     mPasswordTextComfirm.requestFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    return;
                 }
                 sendRegisterInfo();
             }
@@ -70,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     private void sendRegisterInfo(){
         try{
-            String path ="";
+            String path ="http://dipdoo.dothome.co.kr/LoginTest/Register.php";
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
             final String deviceId = telephonyManager.getDeviceId();
             RestfulCmd cmd = new RestfulCmd(path, RestfulCmd.RequestMethod.POST);

@@ -7,16 +7,21 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.TextureView;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermissionsIfNecessary();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
         initComponents();
     }
 
@@ -82,7 +88,22 @@ public class MainActivity extends AppCompatActivity {
         return hasPermissions;
     }
 
-
+    class DoneOnEditorActionListener implements TextView.OnEditorActionListener {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                mLoginButton.performClick();
+                mLoginButton.setPressed(true);
+                mLoginButton.invalidate();
+                mLoginButton.setPressed(false);
+                mLoginButton.invalidate();
+                return true;
+            }
+            return false;
+        }
+    }
 
     private void initComponents() {
         mUsernameText = findViewById(R.id.editText);
@@ -91,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         mRegisterButton = findViewById(R.id.register_btn);
         layoutId = findViewById(R.id.layoutId);
         layoutId1 = findViewById(R.id.layoutId1);
+
+        mPasswordText.setOnEditorActionListener(new DoneOnEditorActionListener());
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,15 +144,19 @@ public class MainActivity extends AppCompatActivity {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
         telephonyManager.getDeviceId();
         try {
-            RestfulCmd cmd = new RestfulCmd("/rest/v1/auth/loginPs", RestfulCmd.RequestMethod.POST); // 정보를 보낼 API URL, 메스드 타입(post) 설정
+            RestfulCmd cmd = new RestfulCmd("http://dipdoo.dothome.co.kr/LoginTest/Login.php", RestfulCmd.RequestMethod.POST); // 정보를 보낼 API URL, 메스드 타입(post) 설정
             cmd.addParam("userId", mUsernameText.getText().toString()); // 아이디 속성 추가
             cmd.addParam("userPw", mPasswordText.getText().toString()); // 비번 속성 추가
+
+            //만일 서버쪽 deviceId와 기기의 deviceId가 다르다면 (회원 가입후 device를 교체했을 경우) 로그인 시, 현재의 디바이스 아이디
+            //를 보내 서버쪽의 deviceId를 최신화 시킬 필요가 있다. 즉 로그인할 때 deviceId를 보내 서버의 device 아이디를 최신화 시키는 방법
             Log.d("deviceId",telephonyManager.getDeviceId()+"");
             cmd.execute();
             cmd.setCallbacksFunc(new RestfulCmd.RestfulCmdResultCb() {
                 @Override
                 public void onPostExcuted(String result) throws JSONException, NullPointerException {
                     JSONObject jObject = new JSONObject(result);
+                    Log.d("mainLogin",jObject.optString(RestfulCmd.JSON_RESULT_OK));
                     if(jObject.optString(RestfulCmd.JSON_RESULT_OK).equals("Y")){
                         loginSuccess(jObject);
                     }else{
@@ -144,12 +171,13 @@ public class MainActivity extends AppCompatActivity {
     public void loginSuccess(JSONObject data){
         SharedPreferences sharedPreferences =getSharedPreferences("deviceShared",MODE_MULTI_PROCESS);
         if(sharedPreferences.contains("deviceId")){
-
+            Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show();
         }else{
             sharedPreferences.edit().putString("deviceId",data.optString("deviceId")).apply();
         }
     }
     public void loginFail(JSONObject result){
-        Toast.makeText(this, "로그인 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+        layoutId.setError("로그인 할 수 없습니다.");
+        layoutId1.setError("아이디와 비밀번호를 확인해주세요");
     }
 }
